@@ -297,9 +297,18 @@ const PAGES: PageSpec[] = [
                                     },
                                     "src": "/assets/video/school-03.mp4",
                                     "poster": "/assets/video/posters/school-03.webp"
+                          },
+                          {
+                                    "title": {
+                                              "en": "IELTS candidate interview",
+                                              "fr": "Interview d'un candidat IELTS",
+                                              "ar": "مقابلة مع مترشّح للآيلتس"
+                                    },
+                                    "src": "/assets/video/school-04.mp4",
+                                    "poster": "/assets/video/posters/school-04.webp"
                           }
                 ],
-                "columns": "3",
+                "columns": "4",
                 "tone": "surface",
                 "primaryCta": [
                           {
