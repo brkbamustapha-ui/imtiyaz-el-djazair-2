@@ -73,6 +73,8 @@ export async function HeroSection({ data, locale, sectionId }: SectionProps) {
                 }
           }
         >
+          {/* Decorative: the hero's words are real text below, so describing
+              the backdrop again would only repeat them to a screen reader. */}
           <Image
             src={str(data, "backgroundImage")}
             alt=""

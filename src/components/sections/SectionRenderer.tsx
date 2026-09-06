@@ -57,7 +57,7 @@ export function SectionRenderer({
 }) {
   return (
     <>
-      {sections.map((section) => {
+      {sections.map((section, position) => {
         const Component = REGISTRY[section.type];
         if (!Component) {
           if (process.env.NODE_ENV !== "production") {
@@ -78,6 +78,7 @@ export function SectionRenderer({
             data={section.data}
             locale={locale}
             sectionId={`section-${section.type}-${section.id.slice(-6)}`}
+            isLead={position === 0}
           />
         );
       })}

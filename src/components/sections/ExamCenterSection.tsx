@@ -9,7 +9,8 @@ import { ImagePlaceholder } from "./AboutSection";
 
 type Feature = { title: LocalizedText | string; description: LocalizedText | string; icon?: string };
 
-export function ExamCenterSection({ data, locale, sectionId }: SectionProps) {
+export function ExamCenterSection({ data, locale, sectionId, isLead }: SectionProps) {
+  const Title = isLead ? "h1" : "h2";
   const features = arr<Feature>(data, "features");
   const image = str(data, "image");
   const button = cta(data, "primaryCta");
@@ -50,7 +51,7 @@ export function ExamCenterSection({ data, locale, sectionId }: SectionProps) {
         <Reveal direction="left" delay={0.08}>
           <div>
             {ls(data, "eyebrow", locale) && <p className="eyebrow">{ls(data, "eyebrow", locale)}</p>}
-            <h2 className="h2 mt-3 text-balance">{ls(data, "title", locale)}</h2>
+            <Title className="h2 mt-3 text-balance">{ls(data, "title", locale)}</Title>
             <div
               className="prose-brand mt-5"
               dangerouslySetInnerHTML={{ __html: sanitizeRichText(ls(data, "body", locale)) }}

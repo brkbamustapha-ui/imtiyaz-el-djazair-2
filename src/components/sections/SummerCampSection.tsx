@@ -71,7 +71,7 @@ function labelsFor(locale: Locale) {
  * deploy. It renders nothing at all when no clip has a source, rather than
  * leaving an empty frame on the page.
  */
-export function SummerCampSection({ data, locale, sectionId }: SectionProps) {
+export function SummerCampSection({ data, locale, sectionId, isLead }: SectionProps) {
   const clips: CampClip[] = arr<Clip>(data, "videos")
     .filter((clip) => Boolean(clip.src))
     .map((clip) => ({
@@ -121,6 +121,7 @@ export function SummerCampSection({ data, locale, sectionId }: SectionProps) {
         eyebrow={ls(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
+        as={isLead ? "h1" : "h2"}
       />
 
       {body && (

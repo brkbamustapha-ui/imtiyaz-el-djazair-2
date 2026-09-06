@@ -9,7 +9,8 @@ import { PhotoStack, type StackShot } from "@/components/public/PhotoStack";
 
 type Bullet = { text: LocalizedText | string; icon?: string };
 
-export function AboutSection({ data, locale, sectionId }: SectionProps) {
+export function AboutSection({ data, locale, sectionId, isLead }: SectionProps) {
+  const Title = isLead ? "h1" : "h2";
   const image = str(data, "image");
   // The frame takes either one photograph or several that cycle through it.
   const shots = arr<StackShot>(data, "images").filter((shot) => shot?.url?.trim());
@@ -28,7 +29,7 @@ export function AboutSection({ data, locale, sectionId }: SectionProps) {
         <Reveal direction={imageRight ? "right" : "left"}>
           <div>
             {ls(data, "eyebrow", locale) && <p className="eyebrow">{ls(data, "eyebrow", locale)}</p>}
-            <h2 className="h2 mt-3 text-balance">{ls(data, "title", locale)}</h2>
+            <Title className="h2 mt-3 text-balance">{ls(data, "title", locale)}</Title>
             <div
               className="prose-brand mt-6"
               dangerouslySetInnerHTML={{ __html: sanitizeRichText(ls(data, "body", locale)) }}

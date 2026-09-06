@@ -121,7 +121,7 @@ export function SummerCampPlayer({
                 <Image
                   key={clip.poster}
                   src={clip.poster}
-                  alt=""
+                  alt={clip.title}
                   fill
                   priority={false}
                   sizes="(max-width: 1024px) 100vw, 1100px"
@@ -228,7 +228,7 @@ export function SummerCampPlayer({
                   {item.poster ? (
                     <Image
                       src={item.poster}
-                      alt=""
+                      alt={item.title}
                       fill
                       sizes="(max-width: 640px) 50vw, 25vw"
                       className={cn(

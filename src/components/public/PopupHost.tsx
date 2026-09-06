@@ -96,7 +96,7 @@ export function PopupHost({
 
             {imageUrl && (
               <div className="relative aspect-[16/9] w-full">
-                <Image src={imageUrl} alt="" fill sizes="440px" className="object-cover" />
+                <Image src={imageUrl} alt={title} fill sizes="440px" className="object-cover" />
               </div>
             )}
 

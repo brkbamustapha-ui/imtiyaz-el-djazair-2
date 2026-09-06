@@ -11,7 +11,7 @@ import { contactPhones, telHref } from "@/lib/settings-schema";
 import { DEFAULT_CONTACT_FIELDS, type FormFieldDef } from "@/lib/forms";
 import { bool, ls, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
-export async function ContactSection({ data, locale, sectionId }: SectionProps) {
+export async function ContactSection({ data, locale, sectionId, isLead }: SectionProps) {
   const [contact, social] = await Promise.all([getSetting("contact"), getSetting("social")]);
   const showForm = bool(data, "showForm", true);
   const formSlug = str(data, "formSlug", "contact") || "contact";
@@ -83,6 +83,7 @@ export async function ContactSection({ data, locale, sectionId }: SectionProps) 
         eyebrow={ls(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
+        as={isLead ? "h1" : "h2"}
       />
 
       <div className="mt-14 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">

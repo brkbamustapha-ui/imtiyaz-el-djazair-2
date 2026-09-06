@@ -8,7 +8,7 @@ import { arr, bool, cta, ls, SectionHeading, SectionShell, type SectionProps } f
 
 type Module = { title: LocalizedText | string; description: LocalizedText | string; icon?: string };
 
-export function IeltsSection({ data, locale, sectionId }: SectionProps) {
+export function IeltsSection({ data, locale, sectionId, isLead }: SectionProps) {
   const modules = arr<Module>(data, "modules");
   const button = cta(data, "primaryCta");
 
@@ -30,6 +30,7 @@ export function IeltsSection({ data, locale, sectionId }: SectionProps) {
         eyebrow={ls(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
+        as={isLead ? "h1" : "h2"}
       />
 
       {bool(data, "showJourney", true) && modules.length > 1 && (

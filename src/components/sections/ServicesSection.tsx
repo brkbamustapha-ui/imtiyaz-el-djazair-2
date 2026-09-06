@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { cn, safeHref } from "@/lib/utils";
 import { bool, ls, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
-export async function ServicesSection({ data, locale, sectionId }: SectionProps) {
+export async function ServicesSection({ data, locale, sectionId, isLead }: SectionProps) {
   const services = await getServices(num(data, "limit", 9));
   if (services.length === 0) return null;
 
@@ -22,6 +22,7 @@ export async function ServicesSection({ data, locale, sectionId }: SectionProps)
         eyebrow={ls(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
+        as={isLead ? "h1" : "h2"}
       />
 
       <RevealGroup

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getSetting } from "@/lib/settings";
-import { siteUrl } from "@/lib/seo";
+import { siteBaseUrl, siteUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +20,8 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       },
     ],
     sitemap: siteUrl("/sitemap.xml"),
-    host: siteUrl("/"),
+    // Host takes a bare hostname, not a URL: "https://example.com/" is not a
+    // value any crawler that reads this directive accepts.
+    host: new URL(siteBaseUrl()).host,
   };
 }

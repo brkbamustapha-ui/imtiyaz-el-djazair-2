@@ -6,6 +6,13 @@ export type SectionProps = {
   data: Record<string, unknown>;
   locale: Locale;
   sectionId: string;
+  /**
+   * True for the block that opens the page. Its heading becomes the page's
+   * <h1>: only the home page had one, because only the hero renders one, so
+   * seven pages were published with no top-level heading at all. The styling
+   * is unchanged — `h2` here is a class, not the tag.
+   */
+  isLead?: boolean;
 };
 
 export function ls(

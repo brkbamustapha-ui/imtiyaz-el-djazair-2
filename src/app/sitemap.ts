@@ -26,9 +26,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
+  // The listing changes when its newest post does; without this the one URL
+  // that actually moves is the only one with no date on it.
+  const newestPost = posts.reduce<Date | undefined>(
+    (latest, post) => (!latest || post.updatedAt > latest ? post.updatedAt : latest),
+    undefined,
+  );
+
   return [
     ...pageEntries,
-    { url: siteUrl("/news"), changeFrequency: "weekly", priority: 0.8 },
+    {
+      url: siteUrl("/news"),
+      lastModified: newestPost,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
     ...postEntries,
   ];
 }

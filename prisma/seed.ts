@@ -343,6 +343,11 @@ const PAGES: PageSpec[] = [
   {
     slug: "about",
     title: "About",
+    seo: {
+      title: "About the School",
+      description:
+        "Imtiyaz El Djazair is a school and exam centre in Algeria: exam-accurate test rooms, small groups with individual follow-up, and certified teachers.",
+    },
     sections: [
       {
         type: "about",
@@ -366,6 +371,11 @@ const PAGES: PageSpec[] = [
   {
     slug: "programs",
     title: "Programs",
+    seo: {
+      title: "English Courses and IELTS Programs",
+      description:
+        "English courses, IELTS preparation, academic support and international opportunities at Imtiyaz El Djazair — from general English to official testing.",
+    },
     sections: [
       {
         type: "services",
@@ -409,6 +419,11 @@ const PAGES: PageSpec[] = [
   {
     slug: "exam-center",
     title: "Exam Center",
+    seo: {
+      title: "Exam Center in Algeria",
+      description:
+        "The Imtiyaz El Djazair exam centre: controlled test rooms, trained invigilators, a candidate briefing before every session and accessible facilities.",
+    },
     sections: [
       {
         type: "examCenter",
@@ -425,7 +440,9 @@ const PAGES: PageSpec[] = [
     slug: "summer-camp",
     title: "Summer Camp",
     seo: {
-      title: "Summer Camp — Imtiyaz El Djazair",
+      // The layout appends "| Imtiyaz El Djazair"; naming the school here
+      // too printed it twice in the tab and in Google's result.
+      title: "Summer Camp",
       description:
         "The Imtiyaz El Djazair summer camp, filmed on site: activities outside the classroom alongside English practice.",
     },
@@ -453,6 +470,11 @@ const PAGES: PageSpec[] = [
   {
     slug: "gallery",
     title: "Campus",
+    seo: {
+      title: "Campus and Facilities",
+      description:
+        "Photographs from inside Imtiyaz El Djazair: classrooms, exam rooms, events, and the people who make them work.",
+    },
     sections: [
       {
         type: "gallery",
@@ -465,11 +487,21 @@ const PAGES: PageSpec[] = [
   {
     slug: "contact",
     title: "Contact",
+    seo: {
+      title: "Contact and Opening Hours",
+      description:
+        "Contact Imtiyaz El Djazair in Alger: phone numbers, email, opening hours, the map, and a message form to reach the school and exam centre.",
+    },
     sections: [{ type: "contact", name: "Contact" }],
   },
   {
     slug: "privacy-policy",
     title: "Privacy Policy",
+    seo: {
+      title: "Privacy Policy",
+      description:
+        "How Imtiyaz El Djazair handles the details you send through the contact form, what is stored, and how to ask for it to be deleted.",
+    },
     sections: [
       {
         type: "richText",
@@ -489,6 +521,11 @@ const PAGES: PageSpec[] = [
   {
     slug: "terms",
     title: "Terms & Conditions",
+    seo: {
+      title: "Terms and Conditions",
+      description:
+        "Enrolment, cancellation and examination rules for the courses and test sessions run by Imtiyaz El Djazair.",
+    },
     sections: [
       {
         type: "richText",

@@ -7,19 +7,28 @@ import { getAllSettings } from "@/lib/settings";
 import { RevealGroup, RevealItem, Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { formatDate } from "@/lib/utils";
-import { siteUrl } from "@/lib/seo";
+import { breadcrumbSchema, metadataFromPageSeo } from "@/lib/seo";
+import { JsonLd } from "@/components/public/JsonLd";
+import { getBrandLogos } from "@/lib/brand";
 import { ImagePlaceholder } from "@/components/sections/AboutSection";
 
 const DATE_LOCALE: Record<string, string> = { en: "en-GB", fr: "fr-FR", ar: "ar-DZ" };
 const PAGE_SIZE = 9;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getAllSettings();
-  return {
-    title: "News & Events",
-    description: `Latest news, announcements and events from ${settings.general.siteName}.`,
-    alternates: { canonical: siteUrl("/news") },
-  };
+  const [settings, logos] = await Promise.all([getAllSettings(), getBrandLogos()]);
+  // Through the same helper as every other page, so this one is not the odd
+  // listing left without an og:image or an og:url of its own.
+  return metadataFromPageSeo(
+    {},
+    {
+      title: "News and Events",
+      description: `News, announcements and events from ${settings.general.siteName}, the school and exam centre.`,
+      path: "/news",
+      ogImage: logos.ogImage,
+      siteName: settings.general.siteName,
+    },
+  );
 }
 
 type Props = { searchParams: Promise<{ page?: string; type?: string }> };
@@ -31,7 +40,7 @@ export default async function NewsIndexPage({ searchParams }: Props) {
   const typeFilter = params.type === "EVENT" || params.type === "NEWS" ? params.type : undefined;
 
   const where = { isPublished: true, ...(typeFilter ? { type: typeFilter } : {}) };
-  const [posts, total] = await Promise.all([
+  const [posts, total, settings] = await Promise.all([
     db.post.findMany({
       where,
       orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
@@ -39,6 +48,7 @@ export default async function NewsIndexPage({ searchParams }: Props) {
       take: PAGE_SIZE,
     }),
     db.post.count({ where }),
+    getAllSettings(),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -53,6 +63,12 @@ export default async function NewsIndexPage({ searchParams }: Props) {
 
   return (
     <div className="pt-[calc(var(--header-h)+40px)]">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: settings.general.siteName, path: "/" },
+          { name: heading, path: "/news" },
+        ])}
+      />
       <div className="container-x">
         <Reveal>
           <p className="eyebrow">{locale === "fr" ? "Newsroom" : locale === "ar" ? "غرفة الأخبار" : "Newsroom"}</p>
@@ -97,7 +113,7 @@ export default async function NewsIndexPage({ searchParams }: Props) {
                     {post.coverUrl ? (
                       <Image
                         src={post.coverUrl}
-                        alt=""
+                        alt={post.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"

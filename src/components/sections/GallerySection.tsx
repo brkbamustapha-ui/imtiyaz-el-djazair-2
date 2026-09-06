@@ -4,7 +4,7 @@ import { GalleryGrid } from "@/components/public/Lightbox";
 import { Reveal } from "@/components/ui/Reveal";
 import { ls, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
-export async function GallerySection({ data, locale, sectionId }: SectionProps) {
+export async function GallerySection({ data, locale, sectionId, isLead }: SectionProps) {
   const album = str(data, "album").trim();
   const items = await getGallery(album || undefined, num(data, "limit", 12));
   if (items.length === 0) return null;
@@ -15,6 +15,7 @@ export async function GallerySection({ data, locale, sectionId }: SectionProps) 
         eyebrow={ls(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
+        as={isLead ? "h1" : "h2"}
       />
       <Reveal className="mt-12">
         <GalleryGrid

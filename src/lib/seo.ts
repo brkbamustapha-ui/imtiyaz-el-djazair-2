@@ -87,6 +87,14 @@ export function metadataFromPageSeo(
     path: string;
     /** Page-specific share image — a post's cover, or the school's own file. */
     ogImage?: string | null;
+    /** Shown as og:site_name. Without it the brand is absent from previews. */
+    siteName?: string;
+    /**
+     * Skip the layout's "%s | Imtiyaz El Djazair" template. The home page's
+     * title already ends in the school's name, so the template printed it
+     * twice: "Imtiyaz El Djazair — School & Exam Center | Imtiyaz El Djazair".
+     */
+    titleIsComplete?: boolean;
   },
 ): Metadata {
   const title = seo.title?.trim() || fallback.title;
@@ -102,7 +110,7 @@ export function metadataFromPageSeo(
   );
 
   return {
-    title,
+    title: fallback.titleIsComplete ? { absolute: title } : title,
     description,
     keywords: seo.keywords?.length ? seo.keywords : undefined,
     alternates: { canonical: url },
@@ -111,6 +119,7 @@ export function metadataFromPageSeo(
       title,
       description,
       url,
+      siteName: fallback.siteName || undefined,
       type: "website",
       images: [{ url: share, width: 1200, height: 630, alt: title }],
     },
@@ -120,5 +129,127 @@ export function metadataFromPageSeo(
       description,
       images: [share],
     },
+  };
+}
+
+const WEEKDAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+] as const;
+
+export type OpeningHoursSpec = {
+  "@type": "OpeningHoursSpecification";
+  dayOfWeek: string[];
+  opens: string;
+  closes: string;
+};
+
+/**
+ * Every spelling of a weekday the admin might type, mapped to the one word
+ * schema.org understands. French is here because the school writes in French:
+ * without it a hours row typed only in French would silently produce nothing.
+ */
+const DAY_NAMES: Record<string, (typeof WEEKDAYS)[number]> = {
+  monday: "Monday",
+  tuesday: "Tuesday",
+  wednesday: "Wednesday",
+  thursday: "Thursday",
+  friday: "Friday",
+  saturday: "Saturday",
+  sunday: "Sunday",
+  lundi: "Monday",
+  mardi: "Tuesday",
+  mercredi: "Wednesday",
+  jeudi: "Thursday",
+  vendredi: "Friday",
+  samedi: "Saturday",
+  dimanche: "Sunday",
+};
+
+// Longest first, so "mercredi" is never cut short by "mardi"-style prefixes.
+const DAY_PATTERN = new RegExp(
+  Object.keys(DAY_NAMES)
+    .sort((a, b) => b.length - a.length)
+    .join("|"),
+  "gi",
+);
+
+/**
+ * Turns the opening hours the school types in the admin into the shape
+ * schema.org wants, so Google can show them.
+ *
+ * The admin field is free text — someone may write "Closed", "Sur rendez-vous",
+ * or a range in any wording. Anything this cannot read with certainty produces
+ * nothing rather than a guess: wrong hours in structured data send people to a
+ * closed door, which is worse than no hours at all.
+ */
+export function openingHoursSchema(
+  entries: { day: string; hours: string }[],
+): OpeningHoursSpec[] {
+  const out: OpeningHoursSpec[] = [];
+
+  for (const entry of entries) {
+    const time = entry.hours.match(/(\d{1,2}:\d{2})\s*[\u2013\u2014-]\s*(\d{1,2}:\d{2})/);
+    if (!time) continue;
+
+    const named = entry.day.match(DAY_PATTERN);
+    if (!named || named.length === 0) continue;
+
+    const canonical = (value: string) => DAY_NAMES[value.toLowerCase()];
+
+    let days: string[];
+    if (named.length === 2 && /[\u2013\u2014-]|\bto\b|\b(?:à|au)\b/i.test(entry.day)) {
+      // "Saturday – Thursday" wraps around the end of the week.
+      const from = WEEKDAYS.indexOf(canonical(named[0]));
+      const to = WEEKDAYS.indexOf(canonical(named[1]));
+      if (from < 0 || to < 0) continue;
+      days = [];
+      for (let i = from; ; i = (i + 1) % WEEKDAYS.length) {
+        days.push(WEEKDAYS[i]);
+        if (i === to) break;
+        if (days.length > 7) break;
+      }
+    } else {
+      days = named.map(canonical).filter(Boolean);
+    }
+
+    if (days.length === 0) continue;
+    // schema.org reads these as ISO 8601 times, which want two digits: "8:00"
+    // typed in the admin has to leave here as "08:00".
+    const pad = (value: string) => (value.length === 4 ? `0${value}` : value);
+    out.push({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: days.map((d) => `https://schema.org/${d}`),
+      opens: pad(time[1]),
+      closes: pad(time[2]),
+    });
+  }
+
+  return out;
+}
+
+/**
+ * The Home > Section > Page trail, as schema.org reads it.
+ *
+ * Google draws this above the blue link in place of the raw URL, so a result
+ * for a news post reads "Imtiyaz El Djazair > News > …" instead of a path.
+ * The trail must match what the visitor can actually click, so every entry
+ * here has a real page behind it.
+ */
+export function breadcrumbSchema(trail: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((step, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: step.name,
+      item: siteUrl(step.path),
+    })),
   };
 }

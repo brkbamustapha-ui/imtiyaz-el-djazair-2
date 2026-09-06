@@ -10,14 +10,14 @@ import { JsonLd } from "@/components/public/JsonLd";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatDate, readingTime, sanitizeRichText, truncate } from "@/lib/utils";
-import { metadataFromPageSeo, parsePageSeo, siteUrl } from "@/lib/seo";
+import { breadcrumbSchema, metadataFromPageSeo, parsePageSeo, siteUrl } from "@/lib/seo";
 
 const DATE_LOCALE: Record<string, string> = { en: "en-GB", fr: "fr-FR", ar: "ar-DZ" };
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const [post, settings] = await Promise.all([getPostBySlug(slug), getAllSettings()]);
   if (!post) return { title: "Not found" };
 
   return metadataFromPageSeo(parsePageSeo(post.seoJson), {
@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: post.excerpt || truncate(post.content.replace(/<[^>]+>/g, " "), 155),
     path: `/news/${post.slug}`,
     ogImage: post.coverUrl,
+    siteName: settings.general.siteName,
   });
 }
 
@@ -40,9 +41,17 @@ export default async function PostPage({ params }: Props) {
 
   const related = (await getPosts({ type: "ALL", limit: 4 })).filter((item) => item.id !== post.id).slice(0, 3);
   const publishedAt = post.publishedAt ?? post.createdAt;
+  const newsLabel = locale === "fr" ? "Actualités" : locale === "ar" ? "الأخبار" : "News";
 
   return (
     <article className="pt-[calc(var(--header-h)+32px)]">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: settings.general.siteName, path: "/" },
+          { name: newsLabel, path: "/news" },
+          { name: post.title, path: `/news/${post.slug}` },
+        ])}
+      />
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -113,7 +122,7 @@ export default async function PostPage({ params }: Props) {
         {post.coverUrl && (
           <Reveal delay={0.1} className="mx-auto mt-10 max-w-4xl">
             <div className="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--c-border)]">
-              <Image src={post.coverUrl} alt="" fill sizes="(max-width: 1024px) 100vw, 900px" className="object-cover" priority />
+              <Image src={post.coverUrl} alt={post.title} fill sizes="(max-width: 1024px) 100vw, 900px" className="object-cover" priority />
             </div>
           </Reveal>
         )}
