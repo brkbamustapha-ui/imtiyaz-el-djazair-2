@@ -361,32 +361,64 @@ if (locales.length > 1 && SITE_URL) {
   console.log(`  one sitemap.xml covering ${entries.length} URLs across ${locales.length} languages`);
 }
 
-// Next writes flat files: /about.html, not /about/index.html. Visitors and
-// the site's own links ask for /about, so Apache needs to be told. Without
-// this the site works only where MultiViews happens to be on.
+// Next writes flat files: /about.html. The site's own links ask for /about,
+// so something has to connect the two. The .htaccess below does it — but on
+// someone else's hosting the .htaccess is the single most likely thing to go
+// missing: it is a hidden file, and cPanel's file manager does not show it
+// unless you turn that on.
+//
+// So each page is also written as /about/index.html. Then the site stands up
+// on its own: Apache serves a directory's index without being asked, and
+// redirects /about to /about/ by itself. mod_rewrite off, .htaccess lost —
+// it still works. The copies cost a few megabytes and remove a whole class
+// of "it shows 404 and I don't know why".
+async function alsoAsDirectories(dir) {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (entry.name === "_next" || entry.name === "assets") continue;
+      await alsoAsDirectories(full);
+      continue;
+    }
+    if (!entry.name.endsWith(".html")) continue;
+    if (entry.name === "index.html" || entry.name === "404.html") continue;
+
+    const asDirectory = path.join(dir, entry.name.replace(/\.html$/, ""));
+    await mkdir(asDirectory, { recursive: true });
+    await cp(full, path.join(asDirectory, "index.html"));
+  }
+}
+await alsoAsDirectories(OUT);
+console.log("  every page also written as a folder with index.html");
+
+// Visitors and the site's own links ask for /about, so Apache needs to be
+// told. Without this the site works only where MultiViews happens to be on.
 await writeFile(
   path.join(OUT, ".htaccess"),
   `# Imtiyaz El Djazair — exported site
 # Upload this file together with the rest. It is hidden: make sure the
 # file manager is showing hidden files, or the site will return 404s.
 
+DirectoryIndex index.html
 ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # /about -> /about.html   and   /fr/about -> /fr/about.html
+  # Relative substitutions, so this works whether the site sits at the root
+  # of the account or in an addon domain's own folder.
+
+  # /about -> about.html   and   /fr/about -> fr/about.html
+  #
+  # The substitution is relative on purpose: it then works the same whether
+  # this folder is the account's public_html or an addon domain's own folder.
   #
   # There is deliberately no "!-d" condition here: /news is BOTH news.html and
   # a news/ directory holding the articles. Excluding directories makes Apache
-  # prefer the directory, which has no index file, and answer 404 on the news
-  # page — verified.
+  # prefer the directory, and it answered 404 on the news page — verified.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^(.+?)/?$ /$1.html [L]
-
-  # /fr/ and /ar/ serve their own home page
-  RewriteRule ^(en|fr|ar)/?$ /$1/index.html [L]
+  RewriteRule ^(.+?)/?$ $1.html [L]
 </IfModule>
 
 <IfModule mod_deflate.c>
