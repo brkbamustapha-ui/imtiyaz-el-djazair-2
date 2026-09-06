@@ -11,6 +11,11 @@ export const CSRF_COOKIE = "ied_csrf";
  * Server Actions are separately protected by Next.js' own origin check.
  */
 export async function ensureCsrfToken(): Promise<string> {
+  // A static export posts no form — the contact form falls back to the
+  // visitor's mail client — so there is no token to carry, and reading a
+  // cookie here would make every page holding a form dynamic.
+  if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") return "";
+
   return (await cookies()).get(CSRF_COOKIE)?.value ?? "";
 }
 

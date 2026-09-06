@@ -33,8 +33,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 type Props = { searchParams: Promise<{ page?: string; type?: string }> };
 
+// A static export cannot read a query string: awaiting searchParams makes the
+// page dynamic and fails the export. So a static build shows every post on one
+// page, with no filters and no pagination — which is what a file on disk can
+// honestly offer. Unset in a normal build, where paging works as before.
+const STATIC = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
 export default async function NewsIndexPage({ searchParams }: Props) {
-  const params = await searchParams;
+  const params = STATIC ? {} : await searchParams;
   const locale = await getLocale();
   const currentPage = Math.max(1, Number(params.page ?? 1) || 1);
   const typeFilter = params.type === "EVENT" || params.type === "NEWS" ? params.type : undefined;
@@ -44,8 +50,8 @@ export default async function NewsIndexPage({ searchParams }: Props) {
     db.post.findMany({
       where,
       orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-      skip: (currentPage - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
+      skip: STATIC ? 0 : (currentPage - 1) * PAGE_SIZE,
+      take: STATIC ? 200 : PAGE_SIZE,
     }),
     db.post.count({ where }),
     getAllSettings(),

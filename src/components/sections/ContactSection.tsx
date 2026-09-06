@@ -232,6 +232,14 @@ export async function ContactSection({ data, locale, sectionId, isLead }: Sectio
           <Reveal direction="left" delay={0.08}>
             <DynamicForm
               slug={formSlug}
+              // Only a static export sets this: with no /api route to answer,
+              // the form hands the message to the visitor's mail client
+              // rather than failing in front of them.
+              mailto={
+                process.env.NEXT_PUBLIC_STATIC_EXPORT === "true"
+                  ? contact.email || undefined
+                  : undefined
+              }
               fields={fields}
               csrfToken={csrfToken}
               locale={locale}

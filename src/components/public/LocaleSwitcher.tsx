@@ -26,7 +26,27 @@ export function LocaleSwitcher({
 
   if (locales.length < 2) return null;
 
+  // A static export has three separate builds sitting at /, /fr/ and /ar/:
+  // there is no server to read a cookie, so switching language means going
+  // to the other build. Empty in a normal build, where the cookie is read
+  // server-side exactly as before.
+  const staticRoot = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+  const defaultLocale = process.env.NEXT_PUBLIC_STATIC_DEFAULT_LOCALE || "en";
+
+  /** Where the same page lives in another language, in a static export. */
+  const staticHref = (locale: Locale) => {
+    const path = window.location.pathname;
+    // Strip whichever language prefix is on the current URL, then add the new
+    // one — the default language sits at the root, with no prefix.
+    const bare = path.replace(/^\/(en|fr|ar)(?=\/|$)/, "") || "/";
+    return locale === defaultLocale ? bare : `/${locale}${bare === "/" ? "/" : bare}`;
+  };
+
   const choose = (locale: Locale) => {
+    if (staticRoot) {
+      window.location.href = staticHref(locale);
+      return;
+    }
     document.cookie = `${LOCALE_COOKIE}=${locale};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
     setOpen(false);
     startTransition(() => router.refresh());

@@ -62,6 +62,11 @@ export async function destroyCurrentSession(): Promise<void> {
 
 /** Cached per request: the admin shell + every server action can call it freely. */
 export const getSessionContext = cache(async function getSessionContext(): Promise<SessionContext | null> {
+  // A static export ships no admin and has no sessions: nobody is signed in,
+  // and reading the session cookie here would make every public page dynamic
+  // and fail the export.
+  if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") return null;
+
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;

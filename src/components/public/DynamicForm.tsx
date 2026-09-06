@@ -18,6 +18,16 @@ const COPY = {
     fr: "Une erreur est survenue. Merci de réessayer.",
     ar: "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
   },
+  mailSubject: {
+    en: "Message from the website",
+    fr: "Message depuis le site",
+    ar: "رسالة من الموقع",
+  },
+  mailOpened: {
+    en: "Your email program is opening with the message ready — press send.",
+    fr: "Votre messagerie s'ouvre avec le message prêt — il reste à l'envoyer.",
+    ar: "يفتح برنامج البريد لديك والرسالة جاهزة — اضغط إرسال.",
+  },
 };
 
 export function DynamicForm({
@@ -26,12 +36,19 @@ export function DynamicForm({
   csrfToken,
   locale,
   successMessage,
+  mailto,
 }: {
   slug: string;
   fields: FormFieldDef[];
   csrfToken: string;
   locale: Locale;
   successMessage: string;
+  /**
+   * Where to send the message when no server is listening — a static export
+   * has no /api route to POST to. Empty in a normal build, where the form
+   * posts as it always has.
+   */
+  mailto?: string;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
@@ -51,6 +68,28 @@ export function DynamicForm({
     body.set("_csrf", csrfToken);
     body.set("_ts", String(startedAt.current));
     body.set("_locale", locale);
+
+    // Static export: there is no /api/forms route to answer, and telling a
+    // parent "something went wrong" after they typed a message is worse than
+    // not offering the form. Hand the message to their mail client instead,
+    // already filled in, so it still reaches the school.
+    if (mailto) {
+      const value = (name: string) => String(body.get(name) ?? "").trim();
+      const lines = fields
+        .map((field) => {
+          const written = value(field.name);
+          return written ? `${t(field.label, locale)}: ${written}` : "";
+        })
+        .filter(Boolean)
+        .join("\n");
+      const subject = value("subject") || t(COPY.mailSubject, locale);
+      window.location.href =
+        `mailto:${mailto}?subject=${encodeURIComponent(subject)}` +
+        `&body=${encodeURIComponent(lines)}`;
+      setStatus("success");
+      setMessage(t(COPY.mailOpened, locale));
+      return;
+    }
 
     try {
       const response = await fetch(`/api/forms/${slug}`, { method: "POST", body });

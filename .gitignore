@@ -40,3 +40,6 @@ yarn-error.log*
 
 # uploads and form attachments now live in the database, not on disk
 /storage/
+
+# Static export produced by npm run build:static
+site-statique/
