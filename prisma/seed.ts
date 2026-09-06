@@ -490,7 +490,7 @@ const PAGES: PageSpec[] = [
     seo: {
       title: "Contact and Opening Hours",
       description:
-        "Contact Imtiyaz El Djazair in Alger: phone numbers, email, opening hours, the map, and a message form to reach the school and exam centre.",
+        "Contact Imtiyaz El Djazair in Oran: phone numbers, email, opening hours, the map, and a message form to reach the school and exam centre.",
     },
     sections: [{ type: "contact", name: "Contact" }],
   },

@@ -269,7 +269,7 @@ export const DEFAULT_SETTINGS: SettingsMap = {
     // below is what locates it, so no invented street line goes on the page.
     addressLine1: "",
     addressLine2: "",
-    city: "Alger",
+    city: "Oran",
     country: "Algérie",
     phones: [
       { number: "0561 67 08 05", label: { en: "", fr: "", ar: "" } },
