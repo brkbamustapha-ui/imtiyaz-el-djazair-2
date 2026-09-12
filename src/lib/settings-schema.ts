@@ -261,7 +261,7 @@ export const DEFAULT_SETTINGS: SettingsMap = {
     navCtaLabel: { en: "Apply Now", fr: "S'inscrire", ar: "سجّل الآن" },
     navCtaHref: "/contact",
     enabledLocales: ["en", "fr", "ar"],
-    defaultLocale: "en",
+    defaultLocale: "fr",
     demoContentNotice: true,
   },
   contact: {
@@ -362,7 +362,7 @@ export const DEFAULT_SETTINGS: SettingsMap = {
         links: [
           { id: "about", label: { en: "About", fr: "À propos", ar: "من نحن" }, href: "/about" },
           { id: "programs", label: { en: "Programs", fr: "Programmes", ar: "البرامج" }, href: "/programs" },
-          { id: "gallery", label: { en: "Campus", fr: "Campus", ar: "الحرم" }, href: "/gallery" },
+          { id: "gallery", label: { en: "Campus", fr: "Campus", ar: "المعرض" }, href: "/gallery" },
         ],
       },
       {

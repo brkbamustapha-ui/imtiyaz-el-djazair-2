@@ -2,7 +2,7 @@ import { lt } from "@/lib/localized-field";
 import { getGallery } from "@/server/content";
 import { GalleryGrid } from "@/components/public/Lightbox";
 import { Reveal } from "@/components/ui/Reveal";
-import { ls, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { ls, lsOptional, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 export async function GallerySection({ data, locale, sectionId, isLead }: SectionProps) {
   const album = str(data, "album").trim();
@@ -12,7 +12,7 @@ export async function GallerySection({ data, locale, sectionId, isLead }: Sectio
   return (
     <SectionShell id={sectionId} tone="surface">
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
         as={isLead ? "h1" : "h2"}

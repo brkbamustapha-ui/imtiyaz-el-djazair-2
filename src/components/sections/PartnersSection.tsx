@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { safeHref } from "@/lib/utils";
 import { parseJson } from "@/lib/json";
 import { PartnerGallery, type PartnerShot } from "@/components/public/PartnerGallery";
-import { ls, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { ls, lsOptional, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 /**
  * The badge under each logo. It states the nature of the relationship and
@@ -46,7 +46,7 @@ export async function PartnersSection({ data, locale, sectionId }: SectionProps)
     return (
       <SectionShell id={sectionId} className="!py-16" tone="surface">
         <SectionHeading
-          eyebrow={ls(data, "eyebrow", locale)}
+          eyebrow={lsOptional(data, "eyebrow", locale)}
           title={ls(data, "title", locale)}
           subtitle={ls(data, "subtitle", locale)}
         />
@@ -78,7 +78,7 @@ export async function PartnersSection({ data, locale, sectionId }: SectionProps)
   return (
     <SectionShell id={sectionId} tone="surface">
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
       />

@@ -23,6 +23,32 @@ export function ls(
   return t(data[key] as LocalizedText | string | undefined, locale);
 }
 
+/**
+ * Same as `ls`, but an author who clears the field in ONE language gets
+ * nothing in that language instead of the English text.
+ *
+ * `t` treats an empty string as "not translated yet" and falls back, which is
+ * right for a heading — better English than a blank page. It is wrong for the
+ * small label above a heading: the Arabic word for "Campus" read as the
+ * Sacred Mosque, and clearing it only brought the English back. Clearing a
+ * key that exists is a decision; a key that was never filled still falls back.
+ */
+export function lsOptional(
+  data: Record<string, unknown>,
+  key: string,
+  locale: Locale,
+): string {
+  const value = data[key];
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    const record = value as Record<string, unknown>;
+    if (Object.prototype.hasOwnProperty.call(record, locale)) {
+      const own = record[locale];
+      if (typeof own === "string" && own.trim() === "") return "";
+    }
+  }
+  return ls(data, key, locale);
+}
+
 export function str(data: Record<string, unknown>, key: string, fallback = ""): string {
   const value = data[key];
   return typeof value === "string" ? value : fallback;

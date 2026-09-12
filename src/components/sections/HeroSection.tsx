@@ -8,7 +8,7 @@ import { Counter } from "@/components/ui/Counter";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import { cn, safeHref } from "@/lib/utils";
-import { t } from "@/lib/i18n";
+import { dirFor, t } from "@/lib/i18n";
 import { bool, cta, ls, num, str, type SectionProps } from "./helpers";
 
 export async function HeroSection({ data, locale, sectionId }: SectionProps) {
@@ -19,6 +19,13 @@ export async function HeroSection({ data, locale, sectionId }: SectionProps) {
   const secondaryCta = cta(data, "secondaryCta");
   const showStats = bool(data, "showStats", true);
   const stats = showStats ? (await getStats()).slice(0, 4) : [];
+
+  // Arabic reads right to left, so the photograph sits on the LEFT. The mask
+  // and the tint that fade it into the page were written "to right" and were
+  // not flipped with it: the fade landed on the side the image was already
+  // off, and the photograph ended on a hard vertical edge. Both now follow
+  // the reading direction.
+  const fadeTowards = dirFor(locale) === "rtl" ? "to left" : "to right";
 
   const use3d = backgroundType === "3d" && appearance.effects3dEnabled;
   const intensity = num(data, "particleIntensity", 0.7) * appearance.effects3dIntensity;
@@ -67,9 +74,9 @@ export async function HeroSection({ data, locale, sectionId }: SectionProps) {
               ? undefined
               : {
                   maskImage:
-                    "linear-gradient(to right, transparent 0%, rgb(0 0 0 / 0.35) 14%, #000 42%)",
+                    `linear-gradient(${fadeTowards}, transparent 0%, rgb(0 0 0 / 0.35) 14%, #000 42%)`,
                   WebkitMaskImage:
-                    "linear-gradient(to right, transparent 0%, rgb(0 0 0 / 0.35) 14%, #000 42%)",
+                    `linear-gradient(${fadeTowards}, transparent 0%, rgb(0 0 0 / 0.35) 14%, #000 42%)`,
                 }
           }
         >
@@ -80,6 +87,10 @@ export async function HeroSection({ data, locale, sectionId }: SectionProps) {
             alt=""
             fill
             priority
+            // The hero is the first and largest thing anyone sees, and the
+            // default 75 shows as mush on faces. Worth the extra weight here
+            // and nowhere else.
+            quality={92}
             sizes={align === "center" ? "100vw" : "(max-width: 640px) 100vw, 70vw"}
             className="object-cover"
             style={{ objectPosition: str(data, "backgroundPosition", "center") }}
@@ -112,7 +123,7 @@ export async function HeroSection({ data, locale, sectionId }: SectionProps) {
             background:
               align === "center"
                 ? `linear-gradient(to bottom, rgb(var(--c-bg-rgb) / ${overlay}), rgb(var(--c-bg-rgb) / ${Math.min(1, overlay + 0.35)}))`
-                : `linear-gradient(to right, rgb(var(--c-bg-rgb) / ${Math.min(1, overlay + 0.45)}) 0%, rgb(var(--c-bg-rgb) / ${overlay * 0.8}) 46%, rgb(var(--c-bg-rgb) / ${overlay * 0.25}) 100%)`,
+                : `linear-gradient(${fadeTowards}, rgb(var(--c-bg-rgb) / ${Math.min(1, overlay + 0.45)}) 0%, rgb(var(--c-bg-rgb) / ${overlay * 0.8}) 46%, rgb(var(--c-bg-rgb) / ${overlay * 0.25}) 100%)`,
           }}
         />
       )}

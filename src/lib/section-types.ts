@@ -458,7 +458,9 @@ export const SECTION_TYPES: SectionTypeDefinition[] = [
       { name: "limit", label: "Maximum photos", type: "number", min: 1, max: 60 },
     ],
     defaults: {
-      eyebrow: { en: "Campus", fr: "Campus", ar: "الحرم" },
+      // No Arabic eyebrow: "الحرم" reads as the Sacred Mosque, and the block
+      // needs no label above its heading in Arabic.
+      eyebrow: { en: "Campus", fr: "Campus", ar: "" },
       title: { en: "Inside Imtiyaz El Djazair", fr: "À l'intérieur d'Imtiyaz El Djazair", ar: "داخل امتياز الجزائر" },
       subtitle: { en: "Classrooms, exam rooms and the people who make them work.", fr: "Salles de cours, salles d'examen et les personnes qui les font vivre.", ar: "قاعات الدراسة والامتحان والأشخاص الذين يديرونها." },
       album: "",

@@ -2,7 +2,7 @@ import { lt } from "@/lib/localized-field";
 import { getFaq } from "@/server/content";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
-import { ls, num, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { ls, lsOptional, num, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 export async function FaqSection({ data, locale, sectionId }: SectionProps) {
   const items = await getFaq(num(data, "limit", 8));
@@ -12,7 +12,7 @@ export async function FaqSection({ data, locale, sectionId }: SectionProps) {
     <SectionShell id={sectionId} tone="surface">
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <SectionHeading
-          eyebrow={ls(data, "eyebrow", locale)}
+          eyebrow={lsOptional(data, "eyebrow", locale)}
           title={ls(data, "title", locale)}
           subtitle={ls(data, "subtitle", locale)}
           align="left"

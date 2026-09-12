@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { VideoCard } from "@/components/public/VideoCard";
 import { cn, safeHref, sanitizeRichText } from "@/lib/utils";
 import { t, type LocalizedText } from "@/lib/i18n";
-import { arr, cta, ls, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { arr, cta, ls, lsOptional, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 type Clip = { title?: LocalizedText | string; src?: string; poster?: string };
 
@@ -25,7 +25,7 @@ export function VideoGallerySection({ data, locale, sectionId }: SectionProps) {
   return (
     <SectionShell id={sectionId} tone={str(data, "tone", "surface") === "surface" ? "surface" : "default"}>
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
       />

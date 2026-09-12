@@ -3,7 +3,7 @@ import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { cn, safeHref } from "@/lib/utils";
 import { t, type LocalizedText } from "@/lib/i18n";
-import { arr, ls, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { arr, ls, lsOptional, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 type Item = {
   title: LocalizedText | string;
@@ -20,7 +20,7 @@ export function FeatureGridSection({ data, locale, sectionId }: SectionProps) {
   return (
     <SectionShell id={sectionId}>
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
       />

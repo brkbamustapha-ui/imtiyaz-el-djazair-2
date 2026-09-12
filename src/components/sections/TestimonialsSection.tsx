@@ -3,7 +3,7 @@ import Image from "next/image";
 import { getTestimonials } from "@/server/content";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
-import { ls, num, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { ls, lsOptional, num, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 export async function TestimonialsSection({ data, locale, sectionId }: SectionProps) {
   const testimonials = await getTestimonials(num(data, "limit", 9));
@@ -12,7 +12,7 @@ export async function TestimonialsSection({ data, locale, sectionId }: SectionPr
   return (
     <SectionShell id={sectionId}>
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
       />

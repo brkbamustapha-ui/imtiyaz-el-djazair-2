@@ -5,7 +5,7 @@ import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { Icon } from "@/components/ui/Icon";
 import { cn, safeHref } from "@/lib/utils";
-import { bool, ls, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { bool, ls, lsOptional, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 export async function ServicesSection({ data, locale, sectionId, isLead }: SectionProps) {
   const services = await getServices(num(data, "limit", 9));
@@ -19,7 +19,7 @@ export async function ServicesSection({ data, locale, sectionId, isLead }: Secti
   return (
     <SectionShell id={sectionId}>
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
         as={isLead ? "h1" : "h2"}

@@ -9,7 +9,7 @@ import { t } from "@/lib/i18n";
 import { safeHref } from "@/lib/utils";
 import { contactPhones, telHref } from "@/lib/settings-schema";
 import { DEFAULT_CONTACT_FIELDS, type FormFieldDef } from "@/lib/forms";
-import { bool, ls, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { bool, ls, lsOptional, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 export async function ContactSection({ data, locale, sectionId, isLead }: SectionProps) {
   const [contact, social] = await Promise.all([getSetting("contact"), getSetting("social")]);
@@ -80,7 +80,7 @@ export async function ContactSection({ data, locale, sectionId, isLead }: Sectio
   return (
     <SectionShell id={sectionId}>
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
         as={isLead ? "h1" : "h2"}

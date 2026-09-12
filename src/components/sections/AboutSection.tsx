@@ -4,7 +4,7 @@ import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Icon } from "@/components/ui/Icon";
 import { cn, safeHref, sanitizeRichText } from "@/lib/utils";
 import { t, type LocalizedText } from "@/lib/i18n";
-import { arr, cta, ls, str, SectionShell, type SectionProps } from "./helpers";
+import { arr, cta, ls, lsOptional, str, SectionShell, type SectionProps } from "./helpers";
 import { PhotoStack, type StackShot } from "@/components/public/PhotoStack";
 
 type Bullet = { text: LocalizedText | string; icon?: string };
@@ -28,7 +28,7 @@ export function AboutSection({ data, locale, sectionId, isLead }: SectionProps) 
       >
         <Reveal direction={imageRight ? "right" : "left"}>
           <div>
-            {ls(data, "eyebrow", locale) && <p className="eyebrow">{ls(data, "eyebrow", locale)}</p>}
+            {lsOptional(data, "eyebrow", locale) && <p className="eyebrow">{lsOptional(data, "eyebrow", locale)}</p>}
             <Title className="h2 mt-3 text-balance">{ls(data, "title", locale)}</Title>
             <div
               className="prose-brand mt-6"

@@ -6,7 +6,7 @@ import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Icon } from "@/components/ui/Icon";
 import { formatDate, safeHref } from "@/lib/utils";
 import { t } from "@/lib/i18n";
-import { cta, ls, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { cta, ls, lsOptional, num, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 import { ImagePlaceholder } from "./AboutSection";
 
 const DATE_LOCALE: Record<string, string> = { en: "en-GB", fr: "fr-FR", ar: "ar-DZ" };
@@ -21,7 +21,7 @@ export async function NewsSection({ data, locale, sectionId }: SectionProps) {
     <SectionShell id={sectionId}>
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
-          eyebrow={ls(data, "eyebrow", locale)}
+          eyebrow={lsOptional(data, "eyebrow", locale)}
           title={ls(data, "title", locale)}
           subtitle={ls(data, "subtitle", locale)}
           align="left"

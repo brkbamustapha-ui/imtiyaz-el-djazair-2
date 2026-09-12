@@ -2,7 +2,7 @@ import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { Icon } from "@/components/ui/Icon";
 import { t, type LocalizedText } from "@/lib/i18n";
-import { arr, ls, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { arr, ls, lsOptional, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 type Card = { title: LocalizedText | string; body: LocalizedText | string; icon?: string };
 
@@ -13,7 +13,7 @@ export function ValueCardsSection({ data, locale, sectionId }: SectionProps) {
   return (
     <SectionShell id={sectionId}>
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
       />

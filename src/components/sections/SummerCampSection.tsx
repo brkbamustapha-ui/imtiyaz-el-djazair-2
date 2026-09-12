@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { SummerCampPlayer, type CampClip } from "@/components/public/SummerCampPlayer";
 import { cn, safeHref, sanitizeRichText } from "@/lib/utils";
 import { t, type Locale, type LocalizedText } from "@/lib/i18n";
-import { arr, cta, ls, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { arr, cta, ls, lsOptional, str, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 type Clip = {
   title?: LocalizedText | string;
@@ -118,7 +118,7 @@ export function SummerCampSection({ data, locale, sectionId, isLead }: SectionPr
       />
 
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
         as={isLead ? "h1" : "h2"}

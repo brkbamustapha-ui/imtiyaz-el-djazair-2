@@ -66,11 +66,14 @@ export function NavbarClient({
       )}
       style={{ ["--header-h" as string]: "76px" }}
     >
-      <div className="container-x">
+      {/* The header may run wider than the body text: nine menu items, a
+          three-line wordmark and the two controls on the right need more than
+          the 1176px the reading column gives them. */}
+      <div className="container-x xl:max-w-[1420px]">
         <nav
           aria-label="Main"
           className={cn(
-            "flex items-center justify-between gap-4 rounded-[var(--radius)] px-4 py-2.5 transition-all duration-500 md:px-5",
+            "flex items-center justify-between gap-3 rounded-[var(--radius)] px-4 py-2.5 transition-all duration-500 md:px-5 2xl:gap-4",
             scrolled
               ? "glass-bar shadow-[0_18px_44px_-30px_rgba(0,0,0,0.9)]"
               : "border border-transparent bg-transparent",
@@ -80,7 +83,11 @@ export function NavbarClient({
             {logo}
           </Link>
 
-          <ul className="hidden items-center gap-0.5 lg:flex">
+          {/* xl, not lg: in French the nine labels need ~1200px beside the
+              logo and the controls, and at 1024px they overflowed the bar —
+              the language switcher and the call to action ended up painted
+              outside it. Below this width the menu button carries them. */}
+          <ul className="hidden min-w-0 items-center gap-0.5 xl:flex">
             {items.map((item) => (
               <li key={item.id} className="relative">
                 {item.children.length > 0 ? (
@@ -93,7 +100,7 @@ export function NavbarClient({
                       onClick={() => setOpenSubmenu((value) => (value === item.id ? null : item.id))}
                       aria-expanded={openSubmenu === item.id}
                       className={cn(
-                        "flex items-center gap-1 rounded-full px-3.5 py-2 text-[0.88rem] font-medium transition-colors",
+                        "flex items-center gap-1 rounded-full px-2.5 py-2 text-[0.88rem] font-medium transition-colors 2xl:px-3.5",
                         isActive(item.href)
                           ? "text-[var(--c-text)]"
                           : "text-[var(--c-muted)] hover:text-[var(--c-text)]",
@@ -134,7 +141,7 @@ export function NavbarClient({
                     target={item.openInNewTab ? "_blank" : undefined}
                     rel={item.openInNewTab ? "noopener noreferrer" : undefined}
                     className={cn(
-                      "relative block rounded-full px-3.5 py-2 text-[0.88rem] font-medium transition-colors",
+                      "relative block rounded-full px-2.5 py-2 text-[0.88rem] font-medium transition-colors 2xl:px-3.5",
                       isActive(item.href)
                         ? "text-[var(--c-text)]"
                         : "text-[var(--c-muted)] hover:text-[var(--c-text)]",
@@ -150,7 +157,7 @@ export function NavbarClient({
             ))}
           </ul>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex shrink-0 items-center gap-1.5">
             <div className="hidden sm:block">{localeSwitcher}</div>
             {/* whitespace-nowrap: the pill has a fixed min-height, so a label that
                 wraps to two lines spills out of it. */}
@@ -163,7 +170,7 @@ export function NavbarClient({
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="btn btn-ghost btn-sm !px-2 lg:hidden"
+              className="btn btn-ghost btn-sm !px-2 xl:hidden"
               aria-label="Open menu"
               aria-expanded={open}
               aria-controls="mobile-menu"

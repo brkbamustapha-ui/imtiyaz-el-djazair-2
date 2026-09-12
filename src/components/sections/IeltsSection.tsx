@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { JourneyPath } from "@/components/3d/JourneyPath";
 import { safeHref } from "@/lib/utils";
 import { t, type LocalizedText } from "@/lib/i18n";
-import { arr, bool, cta, ls, SectionHeading, SectionShell, type SectionProps } from "./helpers";
+import { arr, bool, cta, ls, lsOptional, SectionHeading, SectionShell, type SectionProps } from "./helpers";
 
 type Module = { title: LocalizedText | string; description: LocalizedText | string; icon?: string };
 
@@ -27,7 +27,7 @@ export function IeltsSection({ data, locale, sectionId, isLead }: SectionProps) 
       />
 
       <SectionHeading
-        eyebrow={ls(data, "eyebrow", locale)}
+        eyebrow={lsOptional(data, "eyebrow", locale)}
         title={ls(data, "title", locale)}
         subtitle={ls(data, "subtitle", locale)}
         as={isLead ? "h1" : "h2"}
